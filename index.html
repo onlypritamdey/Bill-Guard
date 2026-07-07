@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BillGuard - Trial & Bill Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-4 max-w-md mx-auto">
+
+  <header class="text-center my-6">
+    <h1 class="text-3xl font-extrabold text-emerald-400 tracking-tight">BillGuard</h1>
+    <p class="text-xs text-gray-400 mt-1">Intercepting unwanted charges automatically</p>
+  </header>
+
+  <div class="grid grid-cols-2 gap-3 mb-6">
+    <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-4 shadow-xl text-center">
+      <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-200">Active Guarded</span>
+      <div id="total-tracked" class="text-2xl font-black mt-1">$0.00</div>
+    </div>
+    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-4 shadow-xl text-center">
+      <span class="text-[10px] uppercase font-bold tracking-wider text-blue-200">Total Money Saved</span>
+      <div id="total-saved" class="text-2xl font-black mt-1">$0.00</div>
+    </div>
+  </div>
+
+  <form id="bill-form" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 mb-6 space-y-4">
+    <h2 class="text-md font-bold text-gray-200">Track a New Item</h2>
+    
+    <div class="grid grid-cols-3 gap-2">
+      <input type="text" id="service-name" placeholder="Name (e.g. Netflix)" required 
+        class="col-span-2 bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+      <select id="bill-category" class="bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-gray-300">
+        <option value="Expiry">Trial</option>
+        <option value="Bill">Bill</option>
+      </select>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-3">
+      <input type="number" step="0.01" id="bill-amount" placeholder="Amount ($)" required 
+        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+      <input type="date" id="bill-date" required 
+        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+    </div>
+
+    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold p-3 rounded-xl transition duration-200 text-sm cursor-pointer">
+      Activate Guard
+    </button>
+  </form>
+
+  <main>
+    <h2 class="text-sm font-bold text-gray-400 mb-3 tracking-wide uppercase">Active Guards</h2>
+    <div id="bill-list" class="space-y-3">
+      <p id="empty-state" class="text-center text-sm text-gray-600 py-6">No active guards. Add one above!</p>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
