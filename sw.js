@@ -13,4 +13,4 @@ setInterval(() => {
       client.postMessage({ type: 'CHECK_UPCOMING_BILLS' });
     });
   });
-}, 900000); // Evaluates timelines quietly in the background every 15 minutes
+}, 60000); // Evaluates timelines quietly in the background every 1 minute
