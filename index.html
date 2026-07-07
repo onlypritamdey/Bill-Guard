@@ -9,11 +9,13 @@
 </head>
 <body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-4 max-w-md mx-auto">
 
+  <!-- Header -->
   <header class="text-center my-6">
     <h1 class="text-3xl font-extrabold text-emerald-400 tracking-tight">BillGuard</h1>
     <p class="text-xs text-gray-400 mt-1">Intercepting unwanted charges automatically</p>
   </header>
 
+  <!-- Money Saved Tracker Dashboard -->
   <div class="grid grid-cols-2 gap-3 mb-6">
     <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-4 shadow-xl text-center">
       <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-200">Active Guarded</span>
@@ -25,23 +27,26 @@
     </div>
   </div>
 
+  <!-- Quick Add Form -->
   <form id="bill-form" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 mb-6 space-y-4">
     <h2 class="text-md font-bold text-gray-200">Track a New Item</h2>
     
     <div class="grid grid-cols-3 gap-2">
       <input type="text" id="service-name" placeholder="Name (e.g. Netflix)" required 
-        class="col-span-2 bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+        class="col-span-2 bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-gray-300">
       <select id="bill-category" class="bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-gray-300">
         <option value="Expiry">Trial</option>
         <option value="Bill">Bill</option>
       </select>
     </div>
     
-    <div class="grid grid-cols-2 gap-3">
-      <input type="number" step="0.01" id="bill-amount" placeholder="Amount ($)" required 
-        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+    <div class="grid grid-cols-3 gap-2">
+      <input type="number" step="0.01" id="bill-amount" placeholder="Amt ($)" required 
+        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-gray-300">
       <input type="date" id="bill-date" required 
-        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500">
+        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-gray-300 scheme-dark">
+      <input type="time" id="bill-time" required 
+        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-gray-300 scheme-dark">
     </div>
 
     <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold p-3 rounded-xl transition duration-200 text-sm cursor-pointer">
@@ -49,6 +54,7 @@
     </button>
   </form>
 
+  <!-- The List View -->
   <main>
     <h2 class="text-sm font-bold text-gray-400 mb-3 tracking-wide uppercase">Active Guards</h2>
     <div id="bill-list" class="space-y-3">
