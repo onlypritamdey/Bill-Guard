@@ -12,6 +12,7 @@ const billCategoryInput = document.getElementById('bill-category');
 const billAmountInput = document.getElementById('bill-amount');
 const billDateInput = document.getElementById('bill-date');
 const billTimeInput = document.getElementById('bill-time');
+const billReminderOffsetInput = document.getElementById('bill-reminder-offset');
 const billList = document.getElementById('bill-list');
 const totalTrackedEl = document.getElementById('total-tracked');
 const totalSavedEl = document.getElementById('total-saved');
@@ -21,14 +22,12 @@ const emptyStateEl = document.getElementById('empty-state');
 let bills = JSON.parse(localStorage.getItem('billguard_bills')) || [];
 let totalSavedCash = parseFloat(localStorage.getItem('billguard_saved_cash')) || 0.00;
 
-// Updates dashboard stat displays
 function updateStats() {
   const activeTotal = bills.reduce((sum, item) => sum + parseFloat(item.amount), 0);
   totalTrackedEl.textContent = `$${activeTotal.toFixed(2)}`;
   totalSavedEl.textContent = `$${totalSavedCash.toFixed(2)}`;
 }
 
-// Generates precise minute, hour, and day countdown structures
 function getCountdown(dateString, timeString) {
   const targetDate = new Date(`${dateString}T${timeString || '00:00'}:00`);
   const now = new Date();
@@ -46,7 +45,6 @@ function getCountdown(dateString, timeString) {
   return { text: `${days}d ${hours}h left`, urgent: days <= 1 };
 }
 
-// Intercepts removal tracking to increment financial savings
 window.removeGuard = function(id, amount, category) {
   if (category === 'Expiry') {
     const savedMoney = confirm("Did you cancel this trial in time to avoid getting charged?");
@@ -61,7 +59,6 @@ window.removeGuard = function(id, amount, category) {
   renderBills();
 };
 
-// Main dynamic dashboard template builder
 function renderBills() {
   billList.innerHTML = '';
   
@@ -101,7 +98,6 @@ function renderBills() {
   updateStats();
 }
 
-// Form Submit Handler
 billForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -111,7 +107,9 @@ billForm.addEventListener('submit', (e) => {
     category: billCategoryInput.value,
     amount: billAmountInput.value,
     date: billDateInput.value,
-    time: billTimeInput.value
+    time: billTimeInput.value,
+    reminderOffset: parseInt(billReminderOffsetInput.value),
+    notified: false
   };
 
   bills.push(newBill);
@@ -121,7 +119,6 @@ billForm.addEventListener('submit', (e) => {
   billForm.reset();
 });
 
-// Native Notification Helper Routines
 function requestNotificationPermission() {
   if ('Notification' in window) {
     Notification.requestPermission().then(permission => {
@@ -143,30 +140,36 @@ function sendLocalNotification(title, body) {
   }
 }
 
-// Listen for service worker background execution pings
+// Background Checker Loop
 navigator.serviceWorker.addEventListener('message', (event) => {
   if (event.data.type === 'CHECK_UPCOMING_BILLS') {
     const now = new Date();
+    let updated = false;
+
     bills.forEach(bill => {
       const targetDate = new Date(`${bill.date}T${bill.time || '00:00'}:00`);
       const diffMins = Math.floor((targetDate - now) / (1000 * 60));
+      const userPreference = bill.reminderOffset || 1440;
 
-      // Fire push alarm if transaction lands within the critical 30-minute window
-      if (diffMins > 0 && diffMins <= 30) {
+      if (diffMins > 0 && diffMins <= userPreference && !bill.notified) {
         sendLocalNotification(
-          `⚠️ Deadline Warning: ${bill.name}`,
-          `Your tracking guard for ${bill.name} expires in less than 30 minutes. Take action to clear it!`
+          `⚠️ Guard Alert: ${bill.name}`,
+          `Your tracking guard for ${bill.name} ($${bill.amount}) requires attention soon!`
         );
+        bill.notified = true;
+        updated = true;
       }
     });
+
+    if (updated) {
+      localStorage.setItem('billguard_bills', JSON.stringify(bills));
+    }
   }
 });
 
-// Check permissions on first viewport interaction
 document.body.addEventListener('click', () => {
   if (Notification.permission === 'default') requestNotificationPermission();
 }, { once: true });
 
-// Live Tick Engine Initialization (refresh layouts every 60 seconds)
 setInterval(renderBills, 60000);
 renderBills();
